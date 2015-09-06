@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export HETS_LIB=/opt/hets-lib
+export HETS_MAGIC=/opt/hets/lib/hets.magic
+export HETS_OWL_TOOLS=/opt/hets/lib/hets-owl-tools
+export HETS_APROVE=$HETS_OWL_TOOLS/AProVE.jar
+export HETS_ONTODMU=$HETS_OWL_TOOLS/OntoDMU.jar
+export PELLET_PATH=/usr/bin/pellet
+exec "/opt/hets/bin/hets-bin" "$@"
