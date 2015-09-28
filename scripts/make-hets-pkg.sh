@@ -1,17 +1,17 @@
 #! /bin/bash
 
-hets_git=~/hets/hets-git
+base_dir="$(dirname \"$(realpath $0)\")/.."
+hets_git="$base_dir/hets-git"
+hets_pkg_files="$base_dir/hets-pkg-files"
+hets_pkgbuild="$hets_pkg_files/PKGBUILD"
+hets_testbuild="$base_dir/hets-testbuild"
+hets_aur="$base_dir/hets_aur"
+
 hets_version=master
 hets_name_prefix="hets-"
 hets_version_prefix="0.99_"
 
-hets_pkg_dir=~/hets-packages
-hets_stable_dir=~/hets-packages/hets-stable
-
 pkg_copy_target="server-address:/directory-path/hets/binaries"
-
-hets_script=~/.hets-scripts/
-hets_pkgbuild=~/.hets-scripts/PKGBUILD
 
 cd "$hets_git"
 git pull > /dev/null
@@ -45,7 +45,7 @@ cp "$hets_git/OWL2/lib/owl2api-bin.jar" "$pkg_dir/lib/hets-owl-tools/lib"
 
 cp "$hets_git/magic/hets.magic" "$pkg_dir/lib"
 
-cp "$hets_script/hets-wrapper-script" "$pkg_dir/bin/hets"
+cp "$hets_pkg_files/hets-wrapper-script" "$pkg_dir/bin/hets"
 chmod +x "$pkg_dir/bin/hets"
 
 rel_tarfile="${hets_pkg_name}.tar.gz"
@@ -58,18 +58,26 @@ popd
 
 scp "${hets_pkg_dir}/${rel_tarfile}" "${pkg_copy_target}/${rel_tarfile}"
 
-rm -rf "$hets_stable_dir"
-mkdir -p "$hets_stable_dir"
+rm -rf "$hets_testbuild"
+mkdir -p "$hets_testbuild"
 
-pkgbuild="${hets_stable_dir}/PKGBUILD"
+pkgbuild="${hets_testbuild}/PKGBUILD"
 
 cp "$hets_pkgbuild" "$pkgbuild"
 
-sed -i "s/^pkgver=.*$/pkgver=${hets_version_prefix}${hets_date}/" "$pkgbuild"
+pkgver="${hets_version_prefix}${hets_date}"
+sed -i "s/^pkgver=.*$/pkgver=${pkgver}/" "$pkgbuild"
 sed -i "s/^sha1sums=.*$/sha1sums=('${shasum}')/" "$pkgbuild"
 
-pushd "$hets_stable_dir"
+pushd "$hets_testbuild"
   # will not try to compress the makepkg package
   PKGEXT='.pkg.tar' makepkg
-  mkaurball
+  # mkaurball
+popd
+
+pushd "$hets_aur"
+  cp "$pkgbuild" "$hets_aur/PKGBUILD"
+  mksrcinfo
+  git add PKGBUILD .SRCINFO
+  git commit -m "Update to ${pkgver}."
 popd
