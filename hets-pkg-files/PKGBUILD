@@ -8,7 +8,7 @@ pkgdesc="A parsing, static analysis and proof management tool incorporating vari
 
 url="http://hets.eu"
 arch=('i686' 'x86_64')
-license='custom:hets-license'
+license=('custom:hets-license')
 depends=('ghc>=6.8.2' 'udrawgraph>=3.1.1' 'tcl' 'tk' 'spass' 'eprover' 'darwin' 'hets-lib' 'ncurses' 'pellet' 'cairo' 'glib2' 'gtk2' 'gettext' 'fontconfig' 'libglade')
 optdepends=('isabelle')
 provides=('hets')
