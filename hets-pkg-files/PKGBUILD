@@ -4,7 +4,7 @@ pkgname=hets
 pkgver=0.99_1443428993
 pkgrel=1
 
-pkgdesc="A parsing, static analysis and proof management tool incorporating various provers and different specification languages, thus providing a tool for heterogeneous specifications. Logic translations are first-class citizens."
+pkgdesc="A parsing, static analysis and proof management tool incorporating various provers and different specification languages."
 
 url="http://hets.eu"
 arch=('i686' 'x86_64')
