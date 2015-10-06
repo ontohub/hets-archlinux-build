@@ -15,7 +15,7 @@ provides=('hets')
 conflicts=('hets')
 sha1sums=('a3d417887183cbc849a56dda0f9b970d93963bb9')
 
-source=("http://www.informatik.uni-bremen.de/~eugenk/archlinux-aur/hets/hets-0.99_${pkgver}.tar.gz")
+source=("http://www.informatik.uni-bremen.de/~eugenk/archlinux-aur/hets/hets-${pkgver}.tar.gz")
 package() {
   cd ${srcdir}
 
