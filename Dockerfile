@@ -49,6 +49,7 @@ RUN chmod +x scripts/*
 
 # Build Hets
 VOLUME /root/hets/hets-build
+RUN /root/hets/scripts/install_dependencies.sh
 RUN /root/hets/scripts/build_hets.sh
 RUN /root/hets/scripts/create_package.sh
 
