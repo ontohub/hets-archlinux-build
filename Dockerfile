@@ -20,7 +20,7 @@ Run echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
 
 # Update and install packages needed for Hets build.
 RUN pacman -Syu --noconfirm
-RUN pacman -S --noconfirm base-devel ghc git apache-ant cabal-install openssh pkgbuild-introspection tcl tk cairo gtk2 fontconfig libglade lib32-libx11
+RUN pacman -S --noconfirm base-devel ghc git apache-ant cabal-install openssh pkgbuild-introspection tcl tk cairo gtk2 fontconfig libglade lib32-libx11 python2
 # Yet to install from AUR: udrawgraph spass hets-lib pellet.
 
 # Allow nobody to use sudo without password - needed for makepkg.
