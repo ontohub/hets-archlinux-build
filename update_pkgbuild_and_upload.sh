@@ -6,7 +6,7 @@ base_dir="$(dirname $0)"
 cd $base_dir
 PKGBUILD="$base_dir/hets-pkg-files/PKGBUILD"
 
-REPOSITORY_URL="https://aur.archlinux.org/hets.git"
+REPOSITORY_URL="ssh+git://aur@aur.archlinux.org/hets.git"
 PACKAGE_REPOSITORY="$base_dir/hets-package-repository"
 
 sync_to_remote() {
