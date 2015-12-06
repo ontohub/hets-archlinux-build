@@ -24,12 +24,13 @@ get_shasum() {
 edit_pkgbuild() {
   ver=$1
   sha=$2
-  if [ -z "$(which gsed 2> /dev/null)" ]; then
-    sed -i "s/pkgver=.*/pkgver=$ver/g" $PKGBUILD
-    sed -i "s/sha1sums=.*/sha1sums=('$sha')/g" $PKGBUILD
-  else
+  if hash gsed 2>/dev/null
+  then
     gsed -i "s/pkgver=.*/pkgver=$ver/g" $PKGBUILD
     gsed -i "s/sha1sums=.*/sha1sums=('$sha')/g" $PKGBUILD
+  else
+    sed -i "s/pkgver=.*/pkgver=$ver/g" $PKGBUILD
+    sed -i "s/sha1sums=.*/sha1sums=('$sha')/g" $PKGBUILD
   fi
 }
 
