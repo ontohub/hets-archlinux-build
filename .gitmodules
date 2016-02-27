@@ -1,3 +1,0 @@
-[submodule "packer-arch"]
-	path = packer-arch
-	url = https://github.com/0robustus1/packer-arch.git
