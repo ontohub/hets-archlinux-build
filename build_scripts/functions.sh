@@ -77,8 +77,9 @@ create_package() {
 # package_dir (the directory to push the package files into)
 create_package_directory_contents() {
   local package_name="$1"
-  local package_dir="$2"
+  local base_package_dir="$2"
   local executable_name="$package_name"
+  local package_dir="$base_package_dir/$(full_package_name "$package_name")"
 
   # create package directory structure
   mkdir -p "$package_dir/bin"
