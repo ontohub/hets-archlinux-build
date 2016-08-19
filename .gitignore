@@ -1,2 +1,8 @@
-aur/*
-packages/*
+upstream-repositories/
+!upstream-repositories/.gitkeep
+
+aur-repositories/
+!aur-repositories/.gitkeep
+
+packages/
+!packages/.gitkeep

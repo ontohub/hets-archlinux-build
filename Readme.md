@@ -10,46 +10,29 @@ At first run, create the docker container by executing
 ```
 ./create_container.sh
 ```
-This script only creates the ready-to-build-Hets container with all the make-dependencies needed for hets.
+This script only creates the ready-to-build-Hets container with all the make-dependencies needed for Hets.
 
-### Consecutive Builds
+### Build and Update the PKGBUILD
 ##### Split Commands
-Consecutive builds can be done by executing
-```
-./build_hets_packages.sh
-```
-which creates a new build in the shared directory.
-
-Finally, the built tarballs are uploaded and the `PKGBUILD` files are updated and uploaded to the AUR by
-```
-./update_pkgbuild_and_aur.sh
-```
-
-This command optionally accepts a parameter for setting the `pkgrel` of the resulting `PKGBUILD`.
-It defaults to `1` if not specified.
-It is possible to pass it as command line argument or via environment variable:
-```
-./update_pkgbuild_and_aur.sh 2
-PKGREL=2 ./update_pkgbuild_and_aur.sh
-```
-If both are specified, the command line argument takes precedence.
-
-##### Single Command
-The following script combines the last two scripts and can solely be used for consecutive builds instead:
+The Hets packages are built and their PKGBUILD files are updated by the command
 ```
 ./update_hets_packages.sh
 ```
+The commits/refs that shall be checked out can be set via environment variables as can the releases (`pkgrel`).
+Setting, e.g., these environment variables
+```
+REF_HETS_COMMONS_BIN=0123456789abcdefabcd0123456789abcdefabcd
+REVISION_HETS_COMMONS_BIN=2
+```
+the script will check out the commit `0123456789abcdefabcd0123456789abcdefabcd` of the Hets upstream repository and write `pkgrel=2` to the PKGBUILD.
+Instead of `HETS_COMMONS_BIN`, you can also specify `HETS_DESKTOP_BIN` and `HETS_SERVER_BIN`, as well as the same ones without the `_BIN` suffix.
 
-# Build procedure and results explained
-Building the Hets binaries is done inside the docker container.
-The scripts used for building are made available to the container with the docker volume `./build_scripts`.
-These scripts are not copied to the container - this directory gets bind-mounted into the container.
-While building, docker accesses some resources for packaging located at the docker volume `./resources`.
-The resulting tarballs are stored in a docker volume at `./packages`.
-All this is done by the first script `.build_hets_packages.sh`.
+What happens there is:
+* The AUR-repository of the package is retrieved to `aur-repositories/$package_name` on the host system.
+* The upstream repository of the package is retrieved to `upstream-repositories/$package_name` and the given reference is checked out (defaults to `origin/master`) on the host system.
+* If it is a `*-bin` package, the application is built and its tarball is packed inside the docker instance.
+If it is not a `*-bin` package, the version info file is created inside the docker instance.
+* The PKGBUILD and .SRCINFO are patched inside the docker instance.
+* The changes of the PKGBUILD and the .SRCINFO are committed on the host system.
 
-The second script `./update_pkgbuild_and_aur.sh` executes almost everything on the host.
-First, the latest tarballs from the `./package` directory are uploaded.
-Second, the AUR repositories of the AUR-packages are fetched to the docker volume `./aur` and their `PKGBUILD` files are updated.
-In this step, the docker instance is invoked once more to run `mksrcinfo` in each AUR repository (which is the only task in this script that is using docker).
-Then the changes to the AUR repositories are committed and pushed to the AUR.
+The committed changes are *not* pushed to the AUR. This must be done manually to allow verifying the results.

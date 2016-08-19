@@ -4,7 +4,7 @@ MAINTAINER Eugen Kuksa @eugenk
 # Important!  Update this no-op ENV variable when this Dockerfile
 # is updated with the current date. It will force refresh of all
 # of the base images when the Dockerfile is built.
-ENV REFRESHED_AT 2016-02-26
+ENV REFRESHED_AT 2016-08-17
 
 # Set correct environment variables.
 ENV HOME /root
@@ -19,47 +19,44 @@ Run echo "Include = /etc/pacman.d/mirrorlist" >> /etc/pacman.conf
 
 # Update and install packages needed for Hets build.
 RUN pacman -Syu --noconfirm
-RUN pacman -S --noconfirm base-devel pkgbuild-introspection git apache-ant ghc cabal-install openssh pkgbuild-introspection tcl tk cairo gtk2 fontconfig libglade lib32-libx11 python2
+RUN pacman -S --noconfirm base-devel pkgbuild-introspection git apache-ant openssh pkgbuild-introspection ghc cabal-install tcl tk cairo gtk2 fontconfig libglade lib32-libx11 python2 zip perl
+ENV PATH=$PATH:/usr/bin/core_perl
+RUN cabal update
+RUN cabal install alex happy -p --global --prefix=/usr
+RUN cabal install gtk2hs-buildtools -p --global --prefix=/usr
+RUN cabal install glib -p --global --prefix=/usr
+RUN cabal install gtk -p --global --prefix=/usr
+RUN git clone --depth=1 https://github.com/cmaeder/glade.git /var/tmp/glade
+RUN cabal install /var/tmp/glade/glade.cabal -p --global --prefix=/usr
 # Yet to install from AUR: udrawgraph eprover hets-lib pellet spass darwin
 
 # Allow nobody to use sudo without password - needed for makepkg.
 RUN echo "nobody ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Configure git.
-RUN git config --global user.email "eugenk@informatik.uni-bremen.de"
-RUN git config --global user.name "Eugen Kuksa"
+RUN git config --global user.email "hets_builder@spechub.org"
+RUN git config --global user.name "Hets Builder"
 
-# Prepare Hets build.
-WORKDIR /root/hets
-
-# Clone the git repository of Hets
-RUN git clone https://github.com/spechub/Hets.git hets-git
+RUN mkdir -p /root/hets/local
+RUN mkdir -p /root/hets/host
 
 # First install all dependencies
-ADD Dockerfile_aux/install_dependencies.sh /root/hets/
-RUN chmod +x install_dependencies.sh
-RUN /root/hets/install_dependencies.sh
+ADD Dockerfile_aux/install_dependencies.sh /root/hets/local/
+RUN chmod +x /root/hets/local/install_dependencies.sh
+RUN /root/hets/local/install_dependencies.sh
 
+# Prepare Hets build.
+WORKDIR /root/hets/local
+# Clone the git repository of Hets
+RUN git clone --depth=1 https://github.com/spechub/Hets.git hets-git
 # install cabal dependencies and make the hets target once for the cache
-WORKDIR /root/hets/hets-git
+WORKDIR /root/hets/local/hets-git
 RUN cabal update
-# The cabal install step will fail for cairo with ghc > 7.8, but it is not a problem.
-RUN cabal install --only-dependencies -f server -f -gtkglade -f -uniform
-RUN make hets-server
+RUN cabal install --only-dependencies -p --global --prefix=/usr
 WORKDIR /root/hets
 
-# Add all other resources
-# local AUR repositories of the AUR packages
-VOLUME /root/hets/aur
-# scripts for building and packaging
-VOLUME /root/hets/build_scripts
-# built packages (not yet AUR packages, but tarballs of hets binary and owl tools)
-VOLUME /root/hets/packages
-# resources like PKGBUILD and wrapper-script templates
-VOLUME /root/hets/resources
+# Add all other resources from the host as a shared volume
+VOLUME /root/hets/host
 
-# Open shell for interactive session.
-CMD bash
-
-# To build and create the updated package, run the following command:
-# CMD /root/hets/scripts/build_and_create_updated_package.sh
+# Work in the host's directory
+WORKDIR /root/hets/host
