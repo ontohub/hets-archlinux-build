@@ -10,8 +10,8 @@ base_dir=$(real_dirname $0)
 
 # Where the packages are uploaded to
 remote_aur_package_host="uni"
-remote_aur_package_dir="/home/wwwuser/eugenk/aur-hets"
-remote_aur_package_root_url="http://www.informatik.uni-bremen.de/~eugenk/aur-hets"
+remote_aur_package_dir="/web/03_theo/sites/theo.iks.cs.ovgu.de/htdocs/downloads/hets/archlinux/x86_64"
+remote_aur_package_root_url="http://hets.eu/downloads/hets/archlinux/x86_64"
 
 # This file makes heavy use of passing associative arrays to functions.
 #
