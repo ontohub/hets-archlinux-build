@@ -106,8 +106,8 @@ install_hets_dependencies() {
   if [ -z "$(ghc-pkg list | grep " gtk-")" ]
   then
     eval "declare -A package_info="${1#*=}
-    cabal update
     export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:
+    cabal update
     cabal install alex happy $cabal_options
     cabal install gtk2hs-buildtools $cabal_options
     cabal install glib $cabal_options
