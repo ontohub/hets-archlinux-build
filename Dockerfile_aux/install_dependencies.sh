@@ -38,4 +38,4 @@ create_dependencies_dir
 make_pkg "aura-bin" "https://aur.archlinux.org/cgit/aur.git/plain/PKGBUILD?h=aura-bin"
 
 # Actual Hets dependencies
-sudo -u nobody sudo aura -A --noconfirm udrawgraph eprover hets-lib pellet spass darwin
+sudo -u nobody sudo aura -A --noconfirm udrawgraph eprover hets-lib pellet spass darwin ksh

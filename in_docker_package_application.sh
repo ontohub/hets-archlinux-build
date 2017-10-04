@@ -13,6 +13,6 @@ source "$base_dir/functions.sh"
 package_info_printed="$(eval "declare -p $1")"
 eval "declare -A package_info="${package_info_printed#*=}
 
-set -x
+debug_level=1
 
 package_application "$(declare -p package_info)"
