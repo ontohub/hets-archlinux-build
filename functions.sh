@@ -239,6 +239,7 @@ clone_repository() {
     mkdir -p "$repo_parent_dir"
     pushd "$repo_parent_dir" > /dev/null
       git clone "$upstream_url" "$repo_dir"
+      git submodule update --init --recursive
     popd > /dev/null
   fi
 }
@@ -249,6 +250,7 @@ pull_repository() {
   debug "pull_repository.repo_dir: $repo_dir"
   pushd "$repo_dir" > /dev/null
     git fetch
+    git submodule update --recursive
     git reset --hard origin/master
   popd > /dev/null
 }
